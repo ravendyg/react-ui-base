@@ -1,0 +1,15 @@
+.InitialisingPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.AuthPage {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 10%;
+}
+.AuthPage__title {
+    margin-bottom: 24px;
+}
