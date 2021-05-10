@@ -1,5 +1,5 @@
-import { User } from '@modules/user/userEntity';
-import { Session } from './sessionEntity';
+import { User } from "@modules/user/models/User";
+import { Session } from "./Session";
 
 export type SessionDao = {
     getById: (id: string) => Promise<Session | null>;

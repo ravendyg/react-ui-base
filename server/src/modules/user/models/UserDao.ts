@@ -1,4 +1,5 @@
-import { GoogleUser, User } from "./userEntity";
+import { GoogleUser } from "./GoogleUser";
+import { User } from "./User";
 
 export type UserDao = {
     getById: (id: number) => Promise<User | null>;

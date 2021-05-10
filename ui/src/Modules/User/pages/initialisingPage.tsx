@@ -2,7 +2,7 @@ import React from 'react';
 import { Spin } from 'antd';
 
 import styles from './styles.module.css';
-import { PageComponent } from 'Modules/Pages/components/pageComponent';
+import { PageComponent } from 'Modules/Router/components/pageComponent';
 
 export const InitialisingPageComponent: React.FC<{}> = () => {
     return <PageComponent className={styles.InitialisingPage}>

@@ -1,8 +1,9 @@
-import { action, makeObservable, observable, runInAction } from "mobx";
+import { action, makeObservable, observable, reaction, runInAction } from "mobx";
 import { GoogleAuthArgs } from "Models/GoogleAuth";
 import { RESPONSE_STATUSES } from "Modules/Api/constants";
 import { Api } from "Modules/Api/models/Api";
 import { Response } from "Modules/Api/models/Response";
+import { BUS_EVENTS } from "Modules/EventBus/BusEvents";
 import { EventBus } from "Modules/EventBus/EventBus";
 import { User } from "./models/User";
 import { UserState } from "./models/UserState";
@@ -27,6 +28,10 @@ export class UserStateImp implements UserState {
             loadUser: action.bound,
             loginWithGoogle: action.bound,
         });
+        reaction(
+            () => this.data,
+            (val) => _eventBus.emit(BUS_EVENTS.USER, val),
+        );
     }
 
     async loadUser() {

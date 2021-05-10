@@ -1,5 +1,6 @@
-import { UserDao } from "@modules/user/userDao";
-import { GoogleUser, User } from "@modules/user/userEntity";
+import { GoogleUser } from "@modules/user/models/GoogleUser";
+import { User } from "@modules/user/models/User";
+import { UserDao } from "@modules/user/models/UserDao";
 import { MockStorage } from "./MockStorage";
 
 export class MockUserDao implements UserDao {

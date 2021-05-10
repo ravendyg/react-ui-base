@@ -1,4 +1,4 @@
-import { User } from '@modules/user/userEntity';
+import { User } from "@modules/user/models/User";
 
 export type Session = {
     id: string;

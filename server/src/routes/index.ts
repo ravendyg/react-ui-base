@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 import { userRouter } from './Users';
+import { tasksRouter } from './Tasks';
 
-
-// Export the base-router
 export const apiRouter = Router();
-apiRouter.use('/user', userRouter);
+apiRouter.use('/users', userRouter);
+apiRouter.use('/tasks', tasksRouter);

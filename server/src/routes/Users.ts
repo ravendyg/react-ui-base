@@ -3,20 +3,23 @@ import { Router } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 
 import { MockSessionDao } from "@mocks/MockSessionDao";
-import { createRouteError, handleRoute } from '@routes/handlers';
-import { GoogleUser, User } from '@modules/user/userEntity';
+import { createRouteError, handleRoute, verifyAuthorization } from '@routes/handlers';
 import { MockUserDao } from '@mocks/MockUserDao';
+import { User } from '@modules/user/models/User';
+import { GoogleUser } from '@modules/user/models/GoogleUser';
+import { UserEntityImpl } from '@modules/user/UserEntityImpl';
+import { SessionEntityImpl } from '@modules/session/SessionEntityImpl';
 
 // Singleton for idToken verification.
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(googleClientId);
+const userDao = new MockUserDao();
+const sessionDao = new MockSessionDao();
 
 export const userRouter = Router();
 
-userRouter.get('/', handleRoute<{ user: User }>(async function (ctx) {
-    if (!ctx.session) {
-        throw createRouteError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
-    }
+userRouter.get('/', handleRoute<{ user: User }>(async (_ctx) => {
+    const ctx = verifyAuthorization(_ctx);
     return {
         user: ctx.session.user,
     };
@@ -30,10 +33,10 @@ type SignResponse = {
     user: User;
 };
 userRouter.post('/signup-google', handleRoute<SignResponse, SignupBody>(async function (ctx) {
-    const sessionDao = new MockSessionDao();
+    const sessionEntity = new SessionEntityImpl(sessionDao);
     if (ctx.session) {
         // remove existing session to prevent collisions
-        await sessionDao.removeById(ctx.session.id);
+        await sessionEntity.removeById(ctx.session.id);
     }
     const { idToken } = ctx.body;
     if (!idToken) {
@@ -54,9 +57,9 @@ userRouter.post('/signup-google', handleRoute<SignResponse, SignupBody>(async fu
         imageUrl: decodedToken.picture || '',
         name: decodedToken.name || '',
     };
-    const userDao = new MockUserDao();
-    const newUser = await userDao.createGoogleUser(user);
-    const newSession = await sessionDao.create(newUser);
+    const userEntity = new UserEntityImpl(userDao);
+    const newUser = await userEntity.createGoogleUser(user);
+    const newSession = await sessionEntity.create(newUser);
     ctx.res.cookie('sessionId', newSession.id);
     return {
         sessionId: newSession.id,
@@ -65,9 +68,9 @@ userRouter.post('/signup-google', handleRoute<SignResponse, SignupBody>(async fu
 }));
 
 userRouter.post('/sign-out', handleRoute<void, {}>(async function (ctx) {
-    const sessionDao = new MockSessionDao();
+    const sessionEntity = new SessionEntityImpl(sessionDao);
     if (ctx.session) {
         // remove existing session to prevent collisions
-        await sessionDao.removeById(ctx.session.id);
+        await sessionEntity.removeById(ctx.session.id);
     }
 }));

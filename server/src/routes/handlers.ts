@@ -1,9 +1,9 @@
-import { Session } from '@modules/session/sessionEntity';
 import { Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 
 import { Dictionary } from '../types';
 import { MockSessionDao } from "@mocks/MockSessionDao";
+import { Session } from '@modules/session/models/Session';
 
 export type Context<B> = {
     session: Session | null;
@@ -12,6 +12,9 @@ export type Context<B> = {
     // @todo: fix all issues thet require direct acess to the Express API.
     req: Request;
     res: Response;
+};
+export type AuthorizedContext<B> = Context<B> & {
+    session: Session;
 };
 
 export type RouteHandler<T, B> = (ctx: Context<B>) => Promise<T | null>;
@@ -60,8 +63,17 @@ export function handleRoute<T, B = {}>(handler: RouteHandler<T, B>) {
         }
     }
 }
+
 export function createRouteError(code: number, message: string) {
     const e = new Error(message) as any;
     e.code = code;
     return e;
+}
+
+// @todo: would it require roles control?
+export function verifyAuthorization<B>(ctx: Context<B>): AuthorizedContext<B> {
+    if (!ctx.session) {
+        throw createRouteError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
+    }
+    return ctx as any;
 }

@@ -1,0 +1,9 @@
+.CurrentTaskPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.CurrentTaskPage__block {
+    padding: 8px;
+}

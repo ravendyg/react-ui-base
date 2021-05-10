@@ -2,7 +2,7 @@ import React from 'react';
 import GoogleButton from 'react-google-button';
 import { observer } from 'mobx-react-lite';
 
-import { PageComponent } from 'Modules/Pages/components/pageComponent';
+import { PageComponent } from 'Modules/Router/components/pageComponent';
 import { useDeps } from 'deps';
 import styles from './styles.module.css';
 import { SpinnerOverlay } from 'Components/SpinerOverlay';

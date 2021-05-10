@@ -8,7 +8,7 @@ export class EventBusImpl implements EventBus {
     this._listeners = new Map<BusEvents, Array<(p: unknown) => void>>();
   }
 
-  subscribe(event: BusEvents, fn: (p: unknown) => void): () => void {
+  subscribe<T = unknown>(event: BusEvents, fn: (p: T) => void): () => void {
     let cbList = this._listeners.get(event);
     if (!cbList) {
       cbList = [];
@@ -23,7 +23,7 @@ export class EventBusImpl implements EventBus {
       }
     }
 
-    cbList.push(fn);
+    cbList.push(fn as any);
     this._listeners.set(event, cbList);
     return unsubscribe;
   }
@@ -38,7 +38,7 @@ export class EventBusImpl implements EventBus {
     }
   }
 
-  private _makeUnsubscribe(event: BusEvents, fn: (p: unknown) => void): () => void {
+  private _makeUnsubscribe<T = unknown>(event: BusEvents, fn: (p: T) => void): () => void {
     const unsubscribe = () => {
       let _cbList = this._listeners.get(event);
       if (_cbList) {

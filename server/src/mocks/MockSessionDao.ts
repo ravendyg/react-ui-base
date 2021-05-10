@@ -1,6 +1,6 @@
-import { SessionDao } from "@modules/session/sessionDao";
-import { Session } from "@modules/session/sessionEntity";
-import { User } from "@modules/user/userEntity";
+import { Session } from "@modules/session/models/Session";
+import { SessionDao } from "@modules/session/models/SessionDao";
+import { User } from "@modules/user/models/User";
 import { MockStorage } from "./MockStorage";
 
 export class MockSessionDao implements SessionDao {
